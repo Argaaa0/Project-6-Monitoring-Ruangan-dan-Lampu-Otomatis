@@ -1,16 +1,19 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
 
-const char* ssid = ".....";
-const char* password = "....";
+const char* ssid = "Galaxy";
+const char* password = "12345678";
 
 const int pirPin = 5; // Pin sensor PIR terhubung ke pin D1 pada ESP8266
+const int relayPin = 4; // Pin relay terhubung ke pin D2 pada ESP8266
 int pirState = LOW;    // Awalnya, tidak ada gerakan
 
 ESP8266WebServer server(80);
 
 void setup() {
   pinMode(pirPin, INPUT);
+  pinMode(relayPin, OUTPUT); // Mengatur pin relay sebagai OUTPUT
+  digitalWrite(relayPin, LOW); // Awalnya, relay dimatikan
   Serial.begin(115200);
   delay(10);
 
@@ -45,8 +48,10 @@ void loop() {
   int sensorValue = digitalRead(pirPin);
   if (sensorValue == HIGH) {
     pirState = HIGH;
+    digitalWrite(relayPin, HIGH); // Menghidupkan relay jika sensor mendeteksi gerakan
   } else {
     pirState = LOW;
+    digitalWrite(relayPin, LOW); // Mematikan relay jika tidak ada gerakan
   }
 
   delay(500);
